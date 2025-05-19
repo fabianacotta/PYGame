@@ -15,4 +15,5 @@ def tela_inicial (comprimento, altura, tela, status):
     AMARELO = (249, 194, 60)
     VERMELHO = (237, 53, 91)
 
-    fonte_titulo = pygame.font.Font ()
+    fonte_titulo = pygame.font.Font ("fontes/fonte1.ttf", 130)
+    fonte_texto = pygame.font.Font ("fontes/fonte3.ttf", 26)
