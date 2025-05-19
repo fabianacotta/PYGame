@@ -34,4 +34,13 @@ def tela_de_creditos (tela, status):
     desenha_texto("-"*80, fonte_texto, BRANCO, tela, 500, 500)
     desenha_texto("Boa sorte!!", fonte_texto, BRANCO, tela, 500, 550)
 
-    
+    botao_voltar = pygame.image.load ('images/botao_back.png')
+
+    if mouse_x >= 50 and mouse_x <= 125 and mouse_y >= 50 and mouse_y <= 100: 
+        botao_voltar = pygame.transform.scale (botao_voltar, (85, 60))
+        tela.blit (botao_voltar, (50, 50))
+    else: 
+        botao_voltar = pygame.transform.scale (botao_voltar, (75, 50))
+        tela.blit (botao_voltar, (50, 50))
+
+    return "tela_de_creditos"
