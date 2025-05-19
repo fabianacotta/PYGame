@@ -17,3 +17,18 @@ def tela_inicial (comprimento, altura, tela, status):
 
     fonte_titulo = pygame.font.Font ("fontes/fonte1.ttf", 130)
     fonte_texto = pygame.font.Font ("fontes/fonte3.ttf", 26)
+
+    tela_de_fundo = pygame.image.load ('images/Insper.png')
+    tela_de_fundo = pygame.transform.scale (tela_de_fundo, (1000, 600))
+
+    tela.fill (BRANCO)
+    tela.blit (tela_de_fundo, (0,0))
+
+    mouse_x = pygame.mouse.get_pos()
+    mouse_y = pygame.mouse.get_pos()
+
+    botao_de_start = pygame.Rect(comprimento//2 - 100, 300, 200, 50)
+    botao_de_instrucoes = pygame.Rect (comprimento//2 - 100, 400, 200, 50)
+    botao_de_sair = pygame.Rect (comprimento//2 - 100, 500, 200, 50)
+
+    
