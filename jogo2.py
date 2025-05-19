@@ -37,7 +37,7 @@ class Game():
     def draw(self):
         pygame.draw.rect(screen, "#003660", (0, 100, WINDOW_WIDTH, WINDOW_HEIGHT-200), 4)
 
-        title_text = self.big_font.render("Insper Escape" , True, "#003660")
+        title_text = self.big_font.render("Escape Insper" , True, "#003660")
         title_rect = title_text.get_rect()
         title_rect.center = (WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2)
         title_rect.top = 5
@@ -103,13 +103,13 @@ class Aspen(pygame.sprite.Sprite):
 
     def move(self):
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_LEFT] and self.rect.x >= 10:
+        if keys[pygame.K_a] and self.rect.x >= 10:
             self.rect.x -= self.velocity
-        if keys[pygame.K_RIGHT] and self.rect.x <= WINDOW_WIDTH - 95:
+        if keys[pygame.K_d] and self.rect.x <= WINDOW_WIDTH - 95:
             self.rect.x += self.velocity
-        if keys[pygame.K_UP] and self.rect.y >= 110:
+        if keys[pygame.K_w] and self.rect.y >= 110:
             self.rect.y -= self.velocity
-        if keys[pygame.K_DOWN] and self.rect.y <= WINDOW_HEIGHT - 95:
+        if keys[pygame.K_s] and self.rect.y <= WINDOW_HEIGHT - 95:
             self.rect.y += self.velocity
 
 #    def check_collision(self):
