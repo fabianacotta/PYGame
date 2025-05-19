@@ -18,7 +18,7 @@ def tela_inicial (comprimento, altura, tela, status):
     fonte_titulo = pygame.font.Font ("fontes/fonte1.ttf", 130)
     fonte_texto = pygame.font.Font ("fontes/fonte3.ttf", 26)
 
-    tela_de_fundo = pygame.image.load ('images/Insper.jpg')
+    tela_de_fundo = pygame.image.load ('images/Insper.png')
     tela_de_fundo = pygame.transform.scale (tela_de_fundo, (1000, 600))
 
     tela.fill (BRANCO)

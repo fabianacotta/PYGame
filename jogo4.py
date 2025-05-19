@@ -107,7 +107,8 @@ class Aspen(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__()
         #define a imagem
-        self.image = pygame.image.load('images/aspen.png')
+        self.image = pygame.image.load('images/aspen.png').convert ()
+        self.image = pygame.transform.scale(self.image, (125, 125)) 
         #Define Rect
         self.rect = self.image.get_rect()
         #define posicao
