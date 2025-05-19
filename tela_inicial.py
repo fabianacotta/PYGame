@@ -44,4 +44,22 @@ def tela_inicial (comprimento, altura, tela, status):
             if botao_de_sair.collidepoint(mouse_x, mouse_y): 
                 pygame.quit ()
                 sys.exit()
-                
+
+    desenha_texto("Jogo do Insper", fonte_titulo, PRETO, tela, comprimento//2, altura // 4)
+
+    if botao_de_start.collidepoint (mouse_x, mouse_y): 
+        botao_de_start = pygame.Rect (comprimento//2 - 105, 295, 210, 60)
+    if botao_dos_creditos.collidepoint(mouse_x, mouse_y): 
+        botao_dos_creditos = pygame.Rect (comprimento//2 - 105, 495, 210, 60)
+    if botao_de_sair.collidepoint(mouse_x, mouse_y): 
+        botao_de_sair = pygame.Rect (comprimento//2 - 105, 495, 210, 60)
+
+    # raio_da_borda_dos_botoes = 5
+    pygame.draw.rect (tela, AZUL, botao_de_start, raio_da_borda = 5)
+    desenha_texto("Start", fonte_texto, BRANCO, tela, botao_de_start.centerx, botao_de_start.centery)
+    pygame.draw.rect (tela, AMARELO, botao_dos_creditos, raio_da_borda = 5)
+    desenha_texto("Créditos", fonte_texto, BRANCO, tela, botao_dos_creditos.centerx, botao_dos_creditos.centery)
+    pygame.draw.rect (tela, VERMELHO, botao_de_sair, raio_da_borda = 5)
+    desenha_texto("Sair", fonte_texto, BRANCO, tela, botao_de_sair.centerx, botao_de_sair.centery)
+
+    return 'tela_inicial'
