@@ -24,3 +24,12 @@ def tela_de_creditos (tela, status):
             sys.exit()
         elif evento.type == pygame.MOUSEBUTTONDOWN and evento.button == 1: 
             status.click.play ()
+
+    desenha_texto("Creditos", fonte_texto, PRETO, tela, 500, 150)
+    desenha_texto("Jogo desenvolvido por:", fonte_texto, BRANCO, tela, 500, 250)
+    desenha_texto("-"*80, fonte_texto, BRANCO, tela, 500, 300)
+    desenha_texto("Julia Fleury", fonte_texto, BRANCO, tela, 500, 350)
+    desenha_texto("Fabiana Cotta", fonte_texto, BRANCO, tela, 500, 400)
+    desenha_texto("Beatriz Guida", fonte_texto, BRANCO, tela, 500, 450)
+    desenha_texto("-"*80, fonte_texto, BRANCO, tela, 500, 500)
+    desenha_texto("Boa sorte!!", fonte_texto, BRANCO, tela, 500, 550)
