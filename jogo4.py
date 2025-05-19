@@ -2,8 +2,6 @@
 import pygame
 import random
 
-from tela_inicial import main_screen
-
 #Pygame setup
 pygame.init()
 WINDOW_WIDTH = 900
