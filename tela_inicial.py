@@ -28,7 +28,20 @@ def tela_inicial (comprimento, altura, tela, status):
     mouse_y = pygame.mouse.get_pos()
 
     botao_de_start = pygame.Rect(comprimento//2 - 100, 300, 200, 50)
-    botao_de_instrucoes = pygame.Rect (comprimento//2 - 100, 400, 200, 50)
+    botao_dos_creditos = pygame.Rect (comprimento//2 - 100, 400, 200, 50)
     botao_de_sair = pygame.Rect (comprimento//2 - 100, 500, 200, 50)
 
-    
+    for evento in pygame.event.get(): 
+        if evento.type == pygame.QUIT: 
+            pygame.quit ()
+            sys.exit ()
+        elif evento.type == pygame.MOUSEBUTTONDOWN and evento.buttom == 1: 
+            status.click.play ()
+            if botao_de_start.collidepoint(mouse_x, mouse_y): 
+                return 'tela_do_botao_de_start'
+            if botao_dos_creditos.collidepoint (mouse_x, mouse_y): 
+                return 'tela_de_creditos'
+            if botao_de_sair.collidepoint(mouse_x, mouse_y): 
+                pygame.quit ()
+                sys.exit()
+                
