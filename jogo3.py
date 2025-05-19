@@ -42,4 +42,26 @@ class Game():
             teclas = pygame.keys.get_pressed ()
             if teclas[pygame.K_p]: 
                 self.pause_game()
-                
+        
+        def draw (self): 
+            pygame.draw.rect (tela, "#003660", (0, 100, COMP_TELA, ALTURA_TELA))
+
+            # Texto 
+            titulo_texto = self.fonte_grande.render ('ALIMENTE A RAPOSA!', True, "#003660")
+            titulo_rect = titulo_texto.get_rect()
+            titulo_rect.centerx = COMP_TELA/2
+            titulo_rect.top = 5 
+
+            texto_vitoria = self.fonte_grande.render ("ALARME DESARMADO!", True, "red")
+            vitoria_rect = texto_vitoria.get_rect ()
+            vitoria_rect.centerx = COMP_TELA/2 
+            vitoria_rect.centery = ALTURA_TELA/2 
+
+            texto_pontos = self.fonte_pequena.render ("Pontos: " + str (self.pontos), True, "blue")
+            pontos_rect = texto_pontos.get_rect ()
+            pontos_rect.topleft = (5, 5)
+
+            texto_vidas = self.fonte_pequena.render ("Vidas: " + str (self.vidas), True, "blue")
+            vidas_rect = texto_vidas.get_rect ()
+            
+
