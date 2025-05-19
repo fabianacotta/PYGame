@@ -5,7 +5,7 @@ import random
 pygame.init ()
 COMP_TELA = 900
 ALTURA_TELA = 600
-tela = pygame.display.set_mode (COMP_TELA, ALTURA_TELA)
+tela = pygame.display.set_mode ((COMP_TELA, ALTURA_TELA))
 pygame.display.set_caption('Jogo de DesSoft')
 relogio = pygame.time.Clock()
 correr = True
@@ -22,8 +22,8 @@ class Game():
         self.vidas = 3
 
         # Definir a fonte
-        self.fonte_pequena = pygame.font.Sysfont ("imapct", 24)
-        self.fonte_grande = pygame.font.Sysfont ("imapct", 60)
+        self.fonte_pequena = pygame.font.SysFont ("impact", 24)
+        self.fonte_grande = pygame.font.SysFont ("impact", 60)
 
         # Definir as imagens das "comidas"
         python_azul = pygame.image.load ("images/food.png")
@@ -33,13 +33,13 @@ class Game():
         # Sendo o python_azul = 0 e o python_vermelho = 1
         self.grupo_comida.add (Food(190, 200, python_vermelho, 1))
         for i in range (7): 
-            self.food_group.add (Food(i * 200, 200, python_azul, 0))
+            self.grupo_comida.add (Food(i * 200, 200, python_azul, 0))
 
     def update (self): 
         self.check_collisions()
         self.draw()
 
-        teclas = pygame.keys.get_pressed ()
+        teclas = pygame.key.get_pressed ()
         if teclas[pygame.K_p]: 
             self.pause_game()
     
@@ -47,7 +47,7 @@ class Game():
         pygame.draw.rect (tela, "#003660", (0, 100, COMP_TELA, ALTURA_TELA))
 
         # Texto 
-        titulo_texto = self.fonte_grande.render ('ALIMENTE A RAPOSA!', True, "#003660")
+        titulo_texto = self.fonte_grande.render ('ESCAPE INSPER!', True, "#003660")
         titulo_rect = titulo_texto.get_rect()
         titulo_rect.centerx = COMP_TELA/2
         titulo_rect.top = 5 
@@ -156,8 +156,6 @@ class Food (pygame.sprite.Sprite):
         super().__init__()
         # Definir a imagem 
         self.image = image 
-        python_azul = pygame.image.load ("images/food.png")
-        python_vermelho = pygame.image.load ("images/chave.png")
         # Pega um rect 
         self.rect = self.image.get_rect()
         # Posição da imagem 
@@ -221,3 +219,7 @@ while correr:
     nosso_jogo.update()
 
     pygame.display.flip ()
+
+    dt = relogio.tick(60) / 1000
+
+pygame.quit ()
