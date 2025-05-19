@@ -34,4 +34,12 @@ class Game():
         self.grupo_comida.add (Food(190, 200, python_vermelho, 1))
         for i in range (7): 
             self.food_group.add (Food(200, 200, python_azul, 0))
-            
+
+        def update (self): 
+            self.check_collisions()
+            self.draw()
+
+            teclas = pygame.keys.get_pressed ()
+            if teclas[pygame.K_p]: 
+                self.pause_game()
+                
