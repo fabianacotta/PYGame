@@ -57,11 +57,11 @@ class Game():
         vitoria_rect.centerx = COMP_TELA/2 
         vitoria_rect.centery = ALTURA_TELA/2 
 
-        texto_pontos = self.fonte_pequena.render ("Pontos: " + str (self.pontos), True, "blue")
+        texto_pontos = self.fonte_pequena.render ("Pontos: " + str (self.pontos), True, "white")
         pontos_rect = texto_pontos.get_rect ()
         pontos_rect.topleft = (5, 5)
 
-        texto_vidas = self.fonte_pequena.render ("Vidas: " + str (self.vidas), True, "blue")
+        texto_vidas = self.fonte_pequena.render ("Vidas: " + str (self.vidas), True, "white")
         vidas_rect = texto_vidas.get_rect ()
         vidas_rect.topright = (COMP_TELA/-5, 5)
 
