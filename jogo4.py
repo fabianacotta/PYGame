@@ -27,8 +27,11 @@ class Game():
         self.big_font = pygame.font.SysFont('impact', 60)
 
         #Aqui vamos definir o logo python e a chave
-        blue_food = pygame.image.load('images/food.png')
-        chave = pygame.image.load('images/chave.png')
+        blue_food = pygame.image.load('images/food.png').convert()
+        blue_food = pygame.transform.scale(blue_food, (100, 120)) 
+        chave = pygame.image.load('images/chave.png').convert()
+        chave = pygame.transform.scale(chave, (50, 50)) 
+
 
         # Food group e chave
         self.food_group.add(Food(190,200, chave, 1))
