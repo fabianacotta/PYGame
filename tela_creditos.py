@@ -18,4 +18,9 @@ def tela_de_creditos (tela, status):
     mouse_x = pygame.mouse.get_pos()
     mouse_y = pygame.mouse.get_pos()
 
-    
+    for evento in pygame.event.get(): 
+        if evento.type == pygame.QUIT: 
+            pygame.quit ()
+            sys.exit()
+        elif evento.type == pygame.MOUSEBUTTONDOWN and evento.button == 1: 
+            status.click.play ()
