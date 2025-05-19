@@ -120,3 +120,38 @@ class Aspen(pygame.sprite.Sprite):
             self.rect.y -= self.velocity
         if keys[pygame.K_DOWN] and self.rect.y <= WINDOW_HEIGHT - 95:
             self.rect.y += self.velocity
+
+
+# Definindo a classe das "comidas"
+
+class Food(pygame.sprite.Sprite):
+    def __init__(self, x, y, image, food_type):
+        super().__init__()
+        #define a imagem
+        self.image = image
+        #Define Rect
+        self.rect = self.image.get_rect()
+        #define posicao
+        self.rect.topleft = (x, y)
+        #move a imagem
+        self.velocity = random.randint(1, 5)
+
+        #aqui define comida ou a chave
+        self.type = food_type
+
+
+        #criando random motion
+        self.dx = random.choice([-1, 1])
+        self.dy = random.choice([-1, 1])
+
+    def update(self):
+        #self.rect.y += self.velocity
+        self.rect.x += self.dx * self.velocity
+        self.rect.y += self.dy * self.velocity
+        #ficar no quadrado
+        if self.rect.left <= 0 or self.rect.right >= WINDOW_WIDTH:
+            self.dx = -1 * self.dx
+        if self.rect.top <= 100 or self.rect.bottom >= 500:
+            self.dy = -1 * self.dy
+
+food_group = pygame.sprite.Group()
