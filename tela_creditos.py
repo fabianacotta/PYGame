@@ -33,3 +33,5 @@ def tela_de_creditos (tela, status):
     desenha_texto("Beatriz Guida", fonte_texto, BRANCO, tela, 500, 450)
     desenha_texto("-"*80, fonte_texto, BRANCO, tela, 500, 500)
     desenha_texto("Boa sorte!!", fonte_texto, BRANCO, tela, 500, 550)
+
+    
