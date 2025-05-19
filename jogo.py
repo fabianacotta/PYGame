@@ -89,4 +89,34 @@ class Game():
     def check_collision(self):
         pegar_chave = pygame.sprite.spritecollideany(self.aspen_group, self.food_group)
         print(pegar_chave)
-        
+
+
+# Definindo a classe do boneco principal
+
+class Aspen(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        super().__init__()
+        #define a imagem
+        self.image = pygame.image.load('images/aspen.png')
+        #Define Rect
+        self.rect = self.image.get_rect()
+        #define posicao
+        self.rect.topleft = (x, y)
+        #move a imagem
+        self.velocity = 5
+        #acrescentando o food group
+        #self.food_group = food_group
+    def update(self):
+        self.move()
+        #self.check_collision()
+
+    def move(self):
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_LEFT] and self.rect.x >= 10:
+            self.rect.x -= self.velocity
+        if keys[pygame.K_RIGHT] and self.rect.x <= WINDOW_WIDTH - 95:
+            self.rect.x += self.velocity
+        if keys[pygame.K_UP] and self.rect.y >= 110:
+            self.rect.y -= self.velocity
+        if keys[pygame.K_DOWN] and self.rect.y <= WINDOW_HEIGHT - 95:
+            self.rect.y += self.velocity
