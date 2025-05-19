@@ -18,7 +18,7 @@ pygame.display.set_caption("Jogo do Insper")
 # Carregar sons ou status, se necessário
 class Status:
     def __init__(self):
-        self.click = pygame.mixer.Sound("sons/click.ogg")
+        self.click = pygame.mixer.Sound("sounds/click.wav")
 
 status = Status()
 
