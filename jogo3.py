@@ -63,5 +63,16 @@ class Game():
 
             texto_vidas = self.fonte_pequena.render ("Vidas: " + str (self.vidas), True, "blue")
             vidas_rect = texto_vidas.get_rect ()
+            vidas_rect.topright = (COMP_TELA/-5, 5)
+
+            # Blit no texto 
+            tela.blit (titulo_texto, titulo_rect)
+            tela.blit (texto_pontos, pontos_rect)
+            tela.blit (texto_vidas, vidas_rect)
+
+            # Pontuação que aparece a tela de vitória 
+            if self.pontos == 8: 
+                tela.blit (texto_vitoria, vitoria_rect)
+
             
 
