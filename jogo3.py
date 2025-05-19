@@ -33,7 +33,7 @@ class Game():
         # Sendo o python_azul = 0 e o python_vermelho = 1
         self.grupo_comida.add (Food(190, 200, python_vermelho, 1))
         for i in range (7): 
-            self.food_group.add (Food(200, 200, python_azul, 0))
+            self.food_group.add (Food(i * 200, 200, python_azul, 0))
 
     def update (self): 
         self.check_collisions()
@@ -93,8 +93,10 @@ class Game():
                     # pygame.quit ()
 
     def check_collisions (self): 
-        if pygame.sprite.groupcollide (self.grupo_aspen, self.grupo_comida): # complementar
-            self.pontos += 1
+        pega_comida = pygame.sprite.spritecollideany(self.grupo_aspen, self.grupo_comida)
+        # pass
+        # if pygame.sprite.groupcollide (self.grupo_aspen, self.grupo_comida, False, True): # complementar
+        #     self.pontos += 1
         
 
 # Definindo a classe Aspen (personagem)
@@ -133,17 +135,33 @@ class Aspen (pygame.sprite.Sprite):
             # print (len(self.grupo_comida))
 
 class Food (pygame.sprite.Sprite): 
-    def __init__ (self, x, y):
+    def __init__ (self, x, y, image, food_type):
         super().__init__()
         # Definir a imagem 
-        self.image = pygame.image.load ("images/food2.png")
+        self.image = image 
+        python_azul = pygame.image.load ("images/food.png")
+        python_vermelho = pygame.image.load ("images/chave.png")
         # Pega um rect 
         self.rect = self.image.get_rect()
         # Posição da imagem 
         self.rect.topleft = (x, y)   
         # Move a imagem 
         self.velocidade = random.randint (1, 5)
+
+        # Food Type: 0 = python_azul e 1 = python_vermelho 
+        self.type = food_type 
         # Criar um Movimento Aleatório 
         self.dx = random.choice([-1, 1])    
         self.dy = random.choice([-1, 1])
-        
+
+    
+    def update (self): 
+        # self.rect.y += self.velocidade 
+        self.rect.x += self.dx + self.velocidade
+        self.rect.y += self.dy + self.velocidade
+
+        # Não deixa sair da tela
+        if self.rect.left <= 0 or self.rect.right >= COMP_TELA:
+            self.dx = -1 * self.dx 
+        if self.rect.top <= 100 or self.rect.bottom >= 500: 
+            self.dy = -1 * self.dy 
