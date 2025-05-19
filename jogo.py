@@ -52,7 +52,7 @@ class Game():
         title_rect.center = (WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2)
         title_rect.top = 5
 
-        win_text = self.big_font.render("Alarme desarmado", True, "red")
+        win_text = self.big_font.render("Você venceu!!", True, "red")
         win_rect = win_text.get_rect()
         win_rect.centerx = WINDOW_WIDTH / 2
         win_rect.centery = WINDOW_HEIGHT / 2
@@ -61,7 +61,7 @@ class Game():
         score_rect = score_text.get_rect()
         score_rect.topleft = (5,5)
 
-        lives_text = self.small_font.render("Lives: " + str(int(self.score)), True, "blue")
+        lives_text = self.small_font.render("Lives: " + str(int(self.lives)), True, "blue")
         lives_rect = lives_text.get_rect()
         lives_rect.topright = (WINDOW_WIDTH - 5, 5)
 
@@ -69,7 +69,7 @@ class Game():
         screen.blit(score_text, score_rect)
         screen.blit(lives_text, lives_rect)
 
-        if self.score == 8:
+        if self.score == 1:
             screen.blit(win_text, win_rect)
 
     def pause_game(self):
