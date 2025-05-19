@@ -155,3 +155,49 @@ class Food(pygame.sprite.Sprite):
             self.dy = -1 * self.dy
 
 food_group = pygame.sprite.Group()
+
+
+
+#Cria o Aspen group
+aspen_group = pygame.sprite.Group()
+#posiciona o aspen na tela
+aspen = Aspen(200,510)
+#adiciona o Aspen no grupo
+aspen_group.add(aspen)
+
+#carrega a imagem
+#aspen = pygame.image.load("images/aspen.png")
+
+#coloca a imagem na tela
+#aspen_rect = aspen.get_rect()
+
+#Posiciona na tela
+#aspen_rect.center = (60, WINDOW_HEIGHT/2)
+
+#######criar o class game#######
+our_game = Game(aspen, food_group)
+
+while running:
+    #Aqui o jogo fecha quando clicar no X
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+    #Escolher a cor da tela
+    screen.fill("black")
+
+    #screen.blit(aspen, aspen_rect)
+    #coloca na tela e move
+    food_group.update()
+    food_group.draw(screen)
+    aspen_group.update()
+    aspen_group.draw(screen)
+
+    #atualiza o jogo
+    our_game.update()
+
+    pygame.display.flip()
+
+    dt = clock.tick(60) / 1000
+
+pygame.quit()
