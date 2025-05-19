@@ -94,6 +94,18 @@ class Game():
 
     def check_collisions (self): 
         pega_comida = pygame.sprite.spritecollideany(self.grupo_aspen, self.grupo_comida)
+        if pega_comida: 
+            # Checa o tipo de comida: azul ou vermelho 
+            if pega_comida.type == 0:  # Azul
+                # Perde uma vida se encostar no python azul 
+                self.vidas -= 1
+                # Move o boneco de volta pra posição inicial 
+                self.grupo_aspen.reset()
+            else: 
+                pega_comida.remove (self.grupo_comida)
+                # Aumenta a pontuação 
+                self.pontos += 1
+
         # pass
         # if pygame.sprite.groupcollide (self.grupo_aspen, self.grupo_comida, False, True): # complementar
         #     self.pontos += 1
@@ -129,6 +141,11 @@ class Aspen (pygame.sprite.Sprite):
             self.rect.y -= self.velocity 
         if teclas[pygame.K_s] and self.rect.y <= ALTURA_TELA - 95: 
             self.rect.y += self.velocity 
+
+    # Reseta o aspen pra posição inicial 
+    def reset(self): 
+        self.rect.topleft = (100, 510)
+
     
     # def check_collisions (self): 
         # if pygame.sprite.spritecollide(self, self.grupo_comida, True): 
@@ -165,3 +182,42 @@ class Food (pygame.sprite.Sprite):
             self.dx = -1 * self.dx 
         if self.rect.top <= 100 or self.rect.bottom >= 500: 
             self.dy = -1 * self.dy 
+
+# Cria um grupo de comida 
+grupo_comida = pygame.sprite.Group() 
+
+# Cria 5 aspens 
+# for i in range (8): 
+#     comida = Food (i * 100, 200)
+#     grupo_comida.add (comida)
+
+# Cria um grupo Aspen 
+grupo_aspen = pygame.sprite.Group()
+# Cria e posiciona o Aspen 
+aspen = Aspen(200, 510)
+# Adiciona o Aspen no grupo aspen 
+grupo_aspen.add (aspen)
+
+# Cria um objeto de jogo 
+nosso_jogo = Game(aspen, grupo_comida)
+
+while correr: 
+    # pygame.QUIT event significa que se o usuário clicar o X, fecha o jogo 
+    for event in pygame.event.get(): 
+        if event.type == pygame.QUIT: 
+            correr = False
+    
+    # Escolher a cor da tela
+    tela.fill ("black")
+
+    # Desenha e move as comidas e o personagem 
+    grupo_comida.update ()
+    grupo_comida.draw (tela)
+
+    grupo_aspen.update()
+    grupo_aspen.draw (tela)
+
+    # Da um update na instância do jogo
+    nosso_jogo.update()
+
+    pygame.display.flip ()
