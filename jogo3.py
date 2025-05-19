@@ -74,5 +74,23 @@ class Game():
             if self.pontos == 8: 
                 tela.blit (texto_vitoria, vitoria_rect)
 
-            
+        def pause_game (self): 
+            global correr 
+
+            is_paused = True
+
+            # Criar um game loop 
+            while is_paused: 
+                # Se o usuário digitar Enter ele despausa: 
+                for event in pygame.event.get(): 
+                    if event.type == pygame.KEYDOWN: 
+                        if event.key == pygame.K_RETURN: 
+                            is_paused = False 
+                    # Se o usuário clicar no X, fecha o jogo 
+                    if event.type == pygame.QUIT: 
+                        is_paused = False 
+                        correr = False 
+                        # pygame.quit ()
+
+        
 
