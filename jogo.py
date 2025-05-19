@@ -21,6 +21,7 @@ class Game():
         self.aspen_group = aspen_group
         self.food_group = food_group
         self.score = 0
+        self.lives = 3
         self.small_font = pygame.font.SysFont('impact', 24)
         self.big_font = pygame.font.SysFont('impact', 60)
 
