@@ -111,3 +111,21 @@ class Aspen (pygame.sprite.Sprite):
         self.velocity = 5
         # Adicionar o grupo_comida pra classe Aspen 
         # self.grupo_comida = grupo_comida 
+
+    def update(self): 
+        self.move()
+        # self.check_collisions()
+
+    # Função de movimento do personagem 
+    def move (self): 
+        teclas = pygame.key.get_pressed ()
+        if teclas[pygame.K_a] and self.rect.x >= 10: 
+            self.rect.x -= self.velocity 
+        if teclas[pygame.K_d] and self.rect.x <= COMP_TELA - 95: 
+            self.rect.x += self.velocity
+        if teclas[pygame.K_w] and self.rect.y >= 110: 
+            self.rect.y -= self.velocity 
+        if teclas[pygame.K_s] and self.rect.y <= ALTURA_TELA - 95: 
+            self.rect.y += self.velocity 
+    
+        
