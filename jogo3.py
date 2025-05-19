@@ -128,4 +128,22 @@ class Aspen (pygame.sprite.Sprite):
         if teclas[pygame.K_s] and self.rect.y <= ALTURA_TELA - 95: 
             self.rect.y += self.velocity 
     
+    # def check_collisions (self): 
+        # if pygame.sprite.spritecollide(self, self.grupo_comida, True): 
+            # print (len(self.grupo_comida))
+
+class Food (pygame.sprite.Sprite): 
+    def __init__ (self, x, y):
+        super().__init__()
+        # Definir a imagem 
+        self.image = pygame.image.load ("images/food2.png")
+        # Pega um rect 
+        self.rect = self.image.get_rect()
+        # Posição da imagem 
+        self.rect.topleft = (x, y)   
+        # Move a imagem 
+        self.velocidade = random.randint (1, 5)
+        # Criar um Movimento Aleatório 
+        self.dx = random.choice([-1, 1])    
+        self.dy = random.choice([-1, 1])
         
