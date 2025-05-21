@@ -1,7 +1,3 @@
-# import pygame 
-# import sys
-# from tela_inicial import tela_inicial
-# from tela_creditos import tela_de_creditos
 
 import pygame
 import sys
@@ -23,7 +19,7 @@ class Status:
 status = Status()
 
 # Variável de controle de estado
-estado = 'tela_inicial'
+
 
 # Variáveis do jogo
 food_group = pygame.sprite.Group()
@@ -35,8 +31,10 @@ jogo = jogo4.Game(aspen_group, food_group)
 clock = pygame.time.Clock()
 rodando = True
 
+estado = 'tela_inicial'
 while rodando:
     if estado == 'tela_inicial':
+        print("inicial")
         estado = tela_inicial(comprimento, altura, tela, status)
 
     elif estado == 'tela_de_creditos':
