@@ -1,5 +1,6 @@
 import pygame
 import random
+from time import sleep
 
 
 
@@ -8,22 +9,100 @@ pygame.init()
 WINDOW_WIDTH = 900
 WINDOW_HEIGHT = 600
 screen = pygame.display.set_mode((WINDOW_WIDTH,WINDOW_HEIGHT))
-pygame.display.set_caption('Teste3')
+pygame.display.set_caption('Insper Escape Game')
 clock = pygame.time.Clock()
 running = True
-
+next_level = 1
+mudar_fase = 0
 dt = 0
 
+#### Tela de Inicio do jogo ########
+width, height = 900, 600
 player_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
+inicio = pygame.image.load("images/Inicio.jpg")
+inicio = pygame.transform.scale(inicio, (900, 600))
+# Limpar a tela
+screen.fill((0, 0, 0))  # Preencher com preto
+# Desenhar a imagem de game over
+screen.blit(inicio, (width // 2 - inicio.get_width() // 2, height // 2 - inicio.get_height() // 2))
+# Atualizar a tela
+pygame.display.update()
+
+
+########## Texto dos botoes de inicio e credito ###############
+small_font = pygame.font.Font("fontes/fonte3.ttf", 24)
+
+inicio_botao_text = small_font.render('Pressione "ENTER" para iniciar', True, "#3d5f9f", "silver")
+inicio_botao_text_rect = inicio_botao_text.get_rect()
+inicio_botao_text_rect.center = (WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 + 70)
+
+screen.blit(inicio_botao_text, inicio_botao_text_rect)
+
+
+inicio_credito_text = small_font.render('Pressione "C" para os creditos', True, "#3d5f9f", "silver")
+inicio_credito_text_rect = inicio_credito_text.get_rect()
+inicio_credito_text_rect.center = (WINDOW_WIDTH / 5, WINDOW_HEIGHT / 2 + 250)
+
+screen.blit(inicio_credito_text, inicio_credito_text_rect)
+
+pygame.display.update()
+
+############# Aguarda pressionar a tecla Enter para iniciar, c para os creditos e X para fechar
+
+keys = pygame.key.get_pressed()
+
+inicio = True
+while inicio:
+    for event in pygame.event.get():
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_RETURN:
+                inicio = False
+            if event.key == pygame.K_c:
+                ######### imagem dos creditos  ##########
+                creditos = pygame.image.load("images/inicio2.jpg")  ### tela dos creditos ####
+                creditos = pygame.transform.scale(creditos, (900, 600))
+                # Limpar a tela
+                screen.fill((0, 0, 0))  # Preencher com preto
+                # Desenhar a imagem de game over
+                screen.blit(creditos, (width // 2 - creditos.get_width() // 2, height // 2 - creditos.get_height() // 2))
+                # Atualizar a tela
+                pygame.display.update()
+                #########################################
+            if event.key == pygame.K_q: # se apertar a letra Q ou escape, fecha o jogo ####
+                inicio = False
+                running = False
+
+        if event.type == pygame.QUIT:
+            inicio = False
+            running = False
+
+#####################################
+
+
+
+
 
 #Definindo um game class
 class Game():
-    def __init__(self, aspen_group, food_group):
-        self.aspen_group = aspen_group
+    def __init__(self, insper_group, food_group):
+        self.insper_group = insper_group
         self.food_group = food_group
         self.score = 0
+        self.lives = 5
+
         self.small_font = pygame.font.SysFont('impact', 24)
         self.big_font = pygame.font.SysFont('impact', 60)
+
+        #Aqui vamos definir o logo python e a chave
+        blue_food = pygame.image.load('images/food.png')
+        chave = pygame.image.load('images/chave.png')
+
+        # Food group e chave
+        self.food_group.add(Food(190,200, chave, 1))
+        for i in range(2): # Define quantos aumenta cada fase
+            self.food_group.add(Food(i*200,200, blue_food, 0))
+
+
 
     def update(self):
         self.check_collision()
@@ -35,32 +114,38 @@ class Game():
             self.pause_game()
 
     def draw(self):
+        global next_level
+
         pygame.draw.rect(screen, "#003660", (0, 100, WINDOW_WIDTH, WINDOW_HEIGHT-200), 4)
 
-        title_text = self.big_font.render("Escape Insper" , True, "#003660")
+        title_text = self.big_font.render(f"Insper Escape - Nivel: {next_level}" , True, "#003660")
         title_rect = title_text.get_rect()
         title_rect.center = (WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2)
         title_rect.top = 5
 
-        win_text = self.big_font.render("Alarme desarmado", True, "red")
-        win_rect = win_text.get_rect()
-        win_rect.centerx = WINDOW_WIDTH / 2
-        win_rect.centery = WINDOW_HEIGHT / 2
 
-        score_text = self.small_font.render("Score: " + str(int(self.score)), True, "blue")
-        score_rect = score_text.get_rect()
-        score_rect.topleft = (5,5)
+        #win_text = self.big_font.render(f"Level {next_level}!!!", True, "red")
+        #win_rect = win_text.get_rect()
+        #win_rect.centerx = WINDOW_WIDTH / 2
+        #win_rect.centery = WINDOW_HEIGHT / 2
 
-        lives_text = self.small_font.render("Lives: " + str(int(self.score)), True, "blue")
+        #score_text = self.small_font.render("Pontos: " + str(int(self.score)), True, "red")
+        #score_rect = score_text.get_rect()
+        #score_rect.topleft = (5,5)
+
+        lives_text = self.small_font.render("Vidas: " + str(int(self.lives)), True, "red")
         lives_rect = lives_text.get_rect()
         lives_rect.topright = (WINDOW_WIDTH - 5, 5)
 
         screen.blit(title_text, title_rect)
-        screen.blit(score_text, score_rect)
+        #screen.blit(score_text, score_rect)  #desabilitei o score
         screen.blit(lives_text, lives_rect)
 
-        if self.score == 8:
-            screen.blit(win_text, win_rect)
+        if self.score == 1:
+            #screen.blit(win_text, win_rect)
+            next_level += 1
+            self.score = 0
+            our_game = Game(insper, food_group) #aqui roda novamente o jogo
 
     def pause_game(self):
         global running
@@ -77,24 +162,62 @@ class Game():
 
 
     def check_collision(self):
-        if pygame.sprite.groupcollide(self.aspen_group, self.food_group, False, True):
-            #print(len(food_group))
-            self.score += 1
-            print(self.score)
+        global next_level
+
+        restart_game_text = self.small_font.render('Pressione "ENTER" para reiniciar', True, "#3d5f9f", "silver")
+        restart_game_text_rect = restart_game_text.get_rect()
+        restart_game_text_rect.center = (WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 + 10)
+
+        pegar_chave = pygame.sprite.spritecollideany(self.insper_group, self.food_group)
+        if pegar_chave:
+            if pegar_chave.type == 0:
+                if self.lives == 1:
+                    ########### Aqui mostra a tela de Game Over e reinicia o joga apos apertar "Enter" #####
+                    width, height = 900, 600
+                    #screen = pygame.display.set_mode((width, height))
+                    self.lives = 5
+                    self.score = 0
+                    next_level = 1
+                    game_over = pygame.image.load("images/game_over.jpg")
+                    game_over = pygame.transform.scale(game_over, (900, 600))
+                    # Desenhar a imagem de game over
+                    screen.blit(game_over, (width // 2 - game_over.get_width() // 2, height // 2 - game_over.get_height() // 2))
+                    # Atualizar a tela
+                    pygame.display.update()
+
+                    ##### Aqui coloco a mensagem de Enter para reiniciar #######
+                    screen.blit(restart_game_text, restart_game_text_rect)
+                    pygame.display.update()
+
+
+                    keys = pygame.key.get_pressed()
+                    self.pause_game()       #Aqui para o jogo e espera o Enter para reiniciar
+                    food_group.remove(food_group) # Aqui apaga os sprites para reiniciar o jogo
+                    #print(food_group)
+                    our_game = Game(insper, food_group)
+                else:
+                    self.lives -= 1
+                self.insper_group.reset()
+
+            else:
+                pegar_chave.remove(self.food_group)
+                self.score += 1
+
+
 
 # Definindo a class
 
-class Aspen(pygame.sprite.Sprite):
+class Insper(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__()
         #define a imagem
-        self.image = pygame.image.load('images/aspen.png')
+        self.image = pygame.image.load('images/insper.png')
         #Define Rect
         self.rect = self.image.get_rect()
         #define posicao
         self.rect.topleft = (x, y)
         #move a imagem
-        self.velocity = 5
+        self.velocity = 10 #velocidade da raposa insper
         #acrescentando o food group
         #self.food_group = food_group
     def update(self):
@@ -103,14 +226,19 @@ class Aspen(pygame.sprite.Sprite):
 
     def move(self):
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_a] and self.rect.x >= 10:
+        if keys[pygame.K_a] and self.rect.x >= 10 or keys[pygame.K_LEFT] and self.rect.x >= 10:
             self.rect.x -= self.velocity
-        if keys[pygame.K_d] and self.rect.x <= WINDOW_WIDTH - 95:
+        if keys[pygame.K_d] and self.rect.x <= WINDOW_WIDTH - 95 or keys[pygame.K_RIGHT] and self.rect.x <= WINDOW_WIDTH - 95:
             self.rect.x += self.velocity
-        if keys[pygame.K_w] and self.rect.y >= 110:
+        if keys[pygame.K_w] and self.rect.y >= 110 or keys[pygame.K_UP] and self.rect.y >= 110:
             self.rect.y -= self.velocity
-        if keys[pygame.K_s] and self.rect.y <= WINDOW_HEIGHT - 95:
+        if keys[pygame.K_s] and self.rect.y <= WINDOW_HEIGHT - 95 or keys[pygame.K_DOWN] and self.rect.y <= WINDOW_HEIGHT - 95:
             self.rect.y += self.velocity
+
+    def reset(self):
+        self.rect.topleft = (100, 510)
+
+
 
 #    def check_collision(self):
 #        if pygame.sprite.spritecollide(self, self.food_group, True):
@@ -120,16 +248,21 @@ class Aspen(pygame.sprite.Sprite):
 
 
 class Food(pygame.sprite.Sprite):
-    def __init__(self, x, y):
+    def __init__(self, x, y, image, food_type):
         super().__init__()
         #define a imagem
-        self.image = pygame.image.load('images/food.png')
+        self.image = image
         #Define Rect
         self.rect = self.image.get_rect()
         #define posicao
         self.rect.topleft = (x, y)
         #move a imagem
         self.velocity = random.randint(1, 5)
+
+        #aqui define comida ou a chave
+        self.type = food_type
+
+
         #criando random motion
         self.dx = random.choice([-1, 1])
         self.dy = random.choice([-1, 1])
@@ -146,29 +279,25 @@ class Food(pygame.sprite.Sprite):
 
 food_group = pygame.sprite.Group()
 
-#Cria 8 foods
-for i in range(8):
-    food = Food(i*100, 200)
-    food_group.add(food)
 
-#Cria o Aspen group
-aspen_group = pygame.sprite.Group()
-#posiciona o aspen na tela
-aspen = Aspen(200,510)
-#adiciona o Aspen no grupo
-aspen_group.add(aspen)
+#Cria o Insper group
+insper_group = pygame.sprite.Group()
+#posiciona o insper na tela
+insper = Insper(200,510)
+#adiciona o Insper no grupo
+insper_group.add(insper)
 
 #carrega a imagem
-#aspen = pygame.image.load("images/aspen.png")
+#insper = pygame.image.load("images/insper.png")
 
 #coloca a imagem na tela
-#aspen_rect = aspen.get_rect()
+#insper_rect = insper.get_rect()
 
 #Posiciona na tela
-#aspen_rect.center = (60, WINDOW_HEIGHT/2)
+#insper_rect.center = (60, WINDOW_HEIGHT/2)
 
-#criar o class game
-our_game = Game(aspen_group, food_group)
+#######criar o class game#######
+our_game = Game(insper, food_group)
 
 while running:
     #Aqui o jogo fecha quando clicar no X
@@ -180,12 +309,12 @@ while running:
 
     screen.fill("black")
 
-    #screen.blit(aspen, aspen_rect)
+    #screen.blit(insper, insper_rect)
     #coloca na tela e move
     food_group.update()
     food_group.draw(screen)
-    aspen_group.update()
-    aspen_group.draw(screen)
+    insper_group.update()
+    insper_group.draw(screen)
 
     #atualiza o jogo
     our_game.update()
