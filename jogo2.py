@@ -3,7 +3,6 @@ import random
 from time import sleep
 
 
-
 #Pygame setup
 pygame.init()
 WINDOW_WIDTH = 900
@@ -16,10 +15,22 @@ next_level = 1
 mudar_fase = 0
 dt = 0
 
+#########  cores do Botao   ########################
+
+# Cores
+BRANCO = (255, 255, 255)
+PRETO = (0, 0, 0)
+CINZA_CLARO = (200, 200, 200)
+CINZA_ESCURO = (100, 100, 100)
+VERMELHO = (255, 0, 0)
+AZUL = (0, 0, 255)
+AMARELO = (255, 255, 0)
+
+
 #### Tela de Inicio do jogo ########
 width, height = 900, 600
 player_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
-inicio = pygame.image.load("images/Inicio.jpg")
+inicio = pygame.image.load("images/inicio_2.jpg")
 inicio = pygame.transform.scale(inicio, (900, 600))
 # Limpar a tela
 screen.fill((0, 0, 0))  # Preencher com preto
@@ -28,30 +39,102 @@ screen.blit(inicio, (width // 2 - inicio.get_width() // 2, height // 2 - inicio.
 # Atualizar a tela
 pygame.display.update()
 
+# Fonte
+fonte = pygame.font.Font(None, 36) # Você pode usar uma fonte específica: pygame.font.Font("sua_fonte.ttf", 36)
 
-########## Texto dos botoes de inicio e credito ###############
-small_font = pygame.font.Font("fontes/fonte3.ttf", 24)
+# Função para desenhar o botão
+def desenhar_botao(surface, cor_fundo, cor_texto, texto, x, y, largura, altura, acao=None):
+    """
+    Desenha um botão na tela e lida com o clique.
 
-inicio_botao_text = small_font.render('Pressione "ENTER" para iniciar', True, "#3d5f9f", "silver")
-inicio_botao_text_rect = inicio_botao_text.get_rect()
-inicio_botao_text_rect.center = (WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 + 70)
+    Args:
+        surface: A superfície onde o botão será desenhado (geralmente a tela).
+        cor_fundo: A cor de fundo do botão.
+        cor_texto: A cor do texto do botão.
+        texto: O texto a ser exibido no botão.
+        x: A coordenada x do canto superior esquerdo do botão.
+        y: A coordenada y do canto superior esquerdo do botão.
+        largura: A largura do botão.
+        altura: A altura do botão.
+        acao: A função a ser chamada quando o botão for clicado.
+    """
+    mouse_pos = pygame.mouse.get_pos()
+    clique = pygame.mouse.get_pressed()
 
-screen.blit(inicio_botao_text, inicio_botao_text_rect)
+    botao_rect = pygame.Rect(x, y, largura, altura)
+
+    # Verifica se o mouse está sobre o botão
+    if botao_rect.collidepoint(mouse_pos):
+        pygame.draw.rect(surface, CINZA_ESCURO, botao_rect) # Cor ao passar o mouse
+        if clique[0] == 1 and acao is not None: # clique[0] é o botão esquerdo do mouse
+            pygame.time.delay(200) # Pequeno delay para evitar cliques múltiplos rápidos
+            acao()
+    else:
+        pygame.draw.rect(surface, cor_fundo, botao_rect)
+
+    # Renderiza o texto
+    texto_surf = fonte.render(texto, True, cor_texto)
+    texto_rect = texto_surf.get_rect(center=botao_rect.center)
+    surface.blit(texto_surf, texto_rect)
+
+    return botao_rect
+
+# Função de ação para o botão
+def acao_do_botao():
+    global rodando
+    global inicio
+
+    print("Botão 1 clicado!")
+    # Coloque aqui o que você quer que o botão faça
+    rodando = False
+    inicio = False
+    running = True
 
 
-inicio_credito_text = small_font.render('Pressione "C" para os creditos', True, "#3d5f9f", "silver")
-inicio_credito_text_rect = inicio_credito_text.get_rect()
-inicio_credito_text_rect.center = (WINDOW_WIDTH / 5, WINDOW_HEIGHT / 2 + 250)
+def acao_do_botao2():
+    print("Botão 2 clicado!")
+    # Coloque aqui o que você quer que o botão faça
+    ######### imagem dos creditos  ##########
+    creditos = pygame.image.load("images/inicio2.jpg")  ### tela dos creditos ####
+    creditos = pygame.transform.scale(creditos, (900, 600))
+    # Limpar a tela
+    screen.fill((0, 0, 0))  # Preencher com preto
+    # Desenhar a imagem de game over
+    screen.blit(creditos, (width // 2 - creditos.get_width() // 2, height // 2 - creditos.get_height() // 2))
+    # Atualizar a tela
+    pygame.display.update()
 
-screen.blit(inicio_credito_text, inicio_credito_text_rect)
+def acao_do_botao3():
+    pygame.quit()
 
-pygame.display.update()
+    print("Botão 3 clicado!")
+    # Coloque aqui o que você quer que o botão faça
+    rodando = False
+    running = False
 
-############# Aguarda pressionar a tecla Enter para iniciar, c para os creditos e X para fechar
+
+# Loop principal do jogo
+rodando = True
+while rodando:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            rodando = False
+
+    # Desenha o botão
+    meu_botao = desenhar_botao(screen, CINZA_CLARO, PRETO, "Iniciar", 350, 240, 200, 50, acao_do_botao)
+
+    meu_botao2 = desenhar_botao(screen, CINZA_CLARO, PRETO, "Creditos", 350, 340, 200, 50, acao_do_botao2)
+
+    meu_botao3 = desenhar_botao(screen, CINZA_CLARO, PRETO, "Sair", 350, 440, 200, 50, acao_do_botao3)
+
+    # Atualiza a tela
+    pygame.display.flip()
+
+
 
 keys = pygame.key.get_pressed()
 
-inicio = True
+#inicio = True
 while inicio:
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
@@ -179,7 +262,7 @@ class Game():
                     self.score = 0
                     next_level = 1
                     game_over = pygame.image.load("images/game_over.jpg")
-                    game_over = pygame.transform.scale(game_over, (900, 600))
+                    game_over = pygame.transform.scale(game_over, (1100, 600))
                     # Desenhar a imagem de game over
                     screen.blit(game_over, (width // 2 - game_over.get_width() // 2, height // 2 - game_over.get_height() // 2))
                     # Atualizar a tela
