@@ -1,3 +1,4 @@
+
 import pygame
 import random
 from time import sleep
@@ -15,7 +16,7 @@ next_level = 1
 mudar_fase = 0
 dt = 0
 
-#########  cores do Botao   ########################
+#################  Cores pros Botões   #################
 
 # Cores
 BRANCO = (255, 255, 255)
@@ -25,6 +26,8 @@ CINZA_ESCURO = (100, 100, 100)
 LARANJA = (207, 132, 79)
 AZUL = (130, 209, 224)
 AMARELO = (240, 213, 130)
+AMARELO_ALARANJADO = (219, 150, 67)
+VINHO_ALARANJADO = (144, 54, 32)
 
 
 #### Tela de Inicio do jogo ########
@@ -40,7 +43,7 @@ screen.blit(inicio, (width // 2 - inicio.get_width() // 2, height // 2 - inicio.
 pygame.display.update()
 
 # Fonte
-fonte = pygame.font.Font(None, 36) # Você pode usar uma fonte específica: pygame.font.Font("sua_fonte.ttf", 36)
+fonte = pygame.font.Font(None, 36) # Pode usar uma fonte de escolha própria: pygame.font.Font("sua_fonte.ttf", 36)
 
 # Função para desenhar o botão
 def desenhar_botao(surface, cor_fundo, cor_texto, texto, x, y, largura, altura, acao=None):
@@ -162,9 +165,6 @@ while inicio:
 #####################################
 
 
-
-
-
 #Definindo um game class
 class Game():
     def __init__(self, insper_group, food_group):
@@ -184,7 +184,6 @@ class Game():
         self.food_group.add(Food(190,200, chave, 1))
         for i in range(2): # Define quantos aumenta cada fase
             self.food_group.add(Food(i*200,200, blue_food, 0))
-
 
 
     def update(self):
@@ -247,7 +246,7 @@ class Game():
     def check_collision(self):
         global next_level
 
-        restart_game_text = self.small_font.render('Pressione "ENTER" para reiniciar', True, "#3d5f9f", "silver")
+        restart_game_text = self.small_font.render('Pressione "ENTER" para reiniciar', True, AMARELO_ALARANJADO, VINHO_ALARANJADO)
         restart_game_text_rect = restart_game_text.get_rect()
         restart_game_text_rect.center = (WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 + 10)
 
@@ -285,7 +284,6 @@ class Game():
             else:
                 pegar_chave.remove(self.food_group)
                 self.score += 1
-
 
 
 # Definindo a class
