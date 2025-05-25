@@ -4,6 +4,7 @@ import random
 from time import sleep
 
 
+
 #Pygame setup
 pygame.init()
 WINDOW_WIDTH = 900
@@ -12,11 +13,13 @@ screen = pygame.display.set_mode((WINDOW_WIDTH,WINDOW_HEIGHT))
 pygame.display.set_caption('Insper Escape Game')
 clock = pygame.time.Clock()
 running = True
+limpa_creditos = False
+
 next_level = 1
 mudar_fase = 0
 dt = 0
 
-#################  Cores pros Botões   #################
+#########  cores do Botao   ########################
 
 # Cores
 BRANCO = (255, 255, 255)
@@ -30,6 +33,10 @@ AMARELO_ALARANJADO = (219, 150, 67)
 VINHO_ALARANJADO = (144, 54, 32)
 
 
+
+
+
+
 #### Tela de Inicio do jogo ########
 width, height = 900, 600
 player_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
@@ -37,13 +44,13 @@ inicio = pygame.image.load("images/inicio_2.jpg")
 inicio = pygame.transform.scale(inicio, (900, 600))
 # Limpar a tela
 screen.fill((0, 0, 0))  # Preencher com preto
-# Desenhar a imagem de game over
+# Desenhar a imagem
 screen.blit(inicio, (width // 2 - inicio.get_width() // 2, height // 2 - inicio.get_height() // 2))
 # Atualizar a tela
 pygame.display.update()
 
 # Fonte
-fonte = pygame.font.Font(None, 36) # Pode usar uma fonte de escolha própria: pygame.font.Font("sua_fonte.ttf", 36)
+fonte = pygame.font.Font(None, 36) # Você pode usar uma fonte específica: pygame.font.Font("sua_fonte.ttf", 36)
 
 # Função para desenhar o botão
 def desenhar_botao(surface, cor_fundo, cor_texto, texto, x, y, largura, altura, acao=None):
@@ -96,16 +103,23 @@ def acao_do_botao():
 
 def acao_do_botao2():
     print("Botão 2 clicado!")
+    global limpa_creditos
     # Coloque aqui o que você quer que o botão faça
     ######### imagem dos creditos  ##########
-    creditos = pygame.image.load("images/inicio2.jpg")  ### tela dos creditos ####
-    creditos = pygame.transform.scale(creditos, (900, 600))
+    creditos = pygame.image.load("images/tela_creditos.jpg")  ### tela dos creditos ####
+    creditos = pygame.transform.scale(creditos, (1110, 600))
     # Limpar a tela
     screen.fill((0, 0, 0))  # Preencher com preto
     # Desenhar a imagem de game over
     screen.blit(creditos, (width // 2 - creditos.get_width() // 2, height // 2 - creditos.get_height() // 2))
+    limpa_creditos = True
+    rodando = False
+
+    # Para remover um botão:
+
     # Atualizar a tela
     pygame.display.update()
+
 
 def acao_do_botao3():
     pygame.quit()
@@ -116,6 +130,24 @@ def acao_do_botao3():
     running = False
 
 
+def acao_do_botao4():
+    global limpa_creditos
+    print("Botão 4 clicado!")
+
+    inicio = pygame.image.load("images/inicio_2.jpg")
+    inicio = pygame.transform.scale(inicio, (900, 600))
+    # Limpar a tela
+    screen.fill((0, 0, 0))  # Preencher com preto
+    # Desenhar a imagem de game over
+    screen.blit(inicio, (width // 2 - inicio.get_width() // 2, height // 2 - inicio.get_height() // 2))
+
+    limpa_creditos = False
+
+    pygame.display.flip()
+
+
+
+
 # Loop principal do jogo
 rodando = True
 while rodando:
@@ -124,16 +156,18 @@ while rodando:
             rodando = False
 
     # Desenha o botão
-    meu_botao = desenhar_botao(screen, AZUL, PRETO, "Iniciar", 350, 240, 200, 50, acao_do_botao)
+    if limpa_creditos == False:
 
-    meu_botao2 = desenhar_botao(screen, AMARELO, PRETO, "Creditos", 350, 340, 200, 50, acao_do_botao2)
+        meu_botao = desenhar_botao(screen, AZUL, PRETO, "Iniciar", 350, 240, 200, 50, acao_do_botao)
 
-    meu_botao3 = desenhar_botao(screen, LARANJA, PRETO, "Sair", 350, 440, 200, 50, acao_do_botao3)
+        meu_botao2 = desenhar_botao(screen, AMARELO, PRETO, "Creditos", 350, 340, 200, 50, acao_do_botao2)
+
+        meu_botao3 = desenhar_botao(screen, LARANJA, PRETO, "Sair", 350, 440, 200, 50, acao_do_botao3)
+    else:
+        meu_botao4 = desenhar_botao(screen, AMARELO, PRETO, "Voltar", 10, 10, 130, 50, acao_do_botao4)
 
     # Atualiza a tela
     pygame.display.flip()
-
-
 
 keys = pygame.key.get_pressed()
 
@@ -165,6 +199,9 @@ while inicio:
 #####################################
 
 
+
+
+
 #Definindo um game class
 class Game():
     def __init__(self, insper_group, food_group):
@@ -184,6 +221,7 @@ class Game():
         self.food_group.add(Food(190,200, chave, 1))
         for i in range(2): # Define quantos aumenta cada fase
             self.food_group.add(Food(i*200,200, blue_food, 0))
+
 
 
     def update(self):
@@ -286,6 +324,7 @@ class Game():
                 self.score += 1
 
 
+
 # Definindo a class
 
 class Insper(pygame.sprite.Sprite):
@@ -320,9 +359,12 @@ class Insper(pygame.sprite.Sprite):
         self.rect.topleft = (100, 510)
 
 
+
 #    def check_collision(self):
 #        if pygame.sprite.spritecollide(self, self.food_group, True):
 #            print(len(food_group))
+
+
 
 
 class Food(pygame.sprite.Sprite):
