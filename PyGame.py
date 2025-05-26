@@ -3,25 +3,26 @@ import pygame
 import random
 from time import sleep
 
-
-
-#Pygame setup
+# Pygame setup
 pygame.init()
-WINDOW_WIDTH = 900
-WINDOW_HEIGHT = 600
-screen = pygame.display.set_mode((WINDOW_WIDTH,WINDOW_HEIGHT))
-pygame.display.set_caption('Insper Escape Game')
-clock = pygame.time.Clock()
-running = True
-limpa_creditos = False
+LARGURA_TELA = 900
+ALTURA_TELA = 600
+TELA = pygame.display.set_mode((LARGURA_TELA, ALTURA_TELA))
+pygame.display.set_caption('Fuja do Python!')
+relogio = pygame.time.Clock()
 
-next_level = 1
-mudar_fase = 0
+# --- VARIÁVEIS DO JOGO ---
+
+jogo_rodando = True
+# Controla se estamos no menu ou no jogo principal
+no_menu = True
+# Controla se a tela de créditos deve ser mostrada
+mostrar_creditos = False
+
 dt = 0
+proximo_nivel = 1
 
-#########  cores do Botao   ########################
-
-# Cores
+# --- CORES ---
 BRANCO = (255, 255, 255)
 PRETO = (0, 0, 0)
 CINZA_CLARO = (200, 200, 200)
@@ -33,195 +34,113 @@ AMARELO_ALARANJADO = (219, 150, 67)
 VINHO_ALARANJADO = (144, 54, 32)
 
 
+# --- CARREGANDO IMAGENS E FONTE ---
+inicio_img = pygame.image.load("images/inicio_2.jpg").convert()
+inicio_img = pygame.transform.scale(inicio_img, (LARGURA_TELA, ALTURA_TELA))
+
+creditos_img = pygame.image.load("images/tela_creditos.jpg").convert()
+creditos_img = pygame.transform.scale(creditos_img, (LARGURA_TELA, ALTURA_TELA))
+
+fonte = pygame.font.Font("fontes/fonte1.ttf", 36)
+
+#Definindo som
+som_pegar_moeda = pygame.mixer.Sound("sounds/click.wav")
 
 
+# --- FUNÇÕES ---
 
-
-#### Tela de Inicio do jogo ########
-width, height = 900, 600
-player_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
-inicio = pygame.image.load("images/inicio_2.jpg")
-inicio = pygame.transform.scale(inicio, (900, 600))
-# Limpar a tela
-screen.fill((0, 0, 0))  # Preencher com preto
-# Desenhar a imagem
-screen.blit(inicio, (width // 2 - inicio.get_width() // 2, height // 2 - inicio.get_height() // 2))
-# Atualizar a tela
-pygame.display.update()
-
-# Fonte
-fonte = pygame.font.Font(None, 36) # Você pode usar uma fonte específica: pygame.font.Font("sua_fonte.ttf", 36)
-
-# Função para desenhar o botão
-def desenhar_botao(surface, cor_fundo, cor_texto, texto, x, y, largura, altura, acao=None):
-    """
-    Desenha um botão na tela e lida com o clique.
-
-    Args:
-        surface: A superfície onde o botão será desenhado (geralmente a tela).
-        cor_fundo: A cor de fundo do botão.
-        cor_texto: A cor do texto do botão.
-        texto: O texto a ser exibido no botão.
-        x: A coordenada x do canto superior esquerdo do botão.
-        y: A coordenada y do canto superior esquerdo do botão.
-        largura: A largura do botão.
-        altura: A altura do botão.
-        acao: A função a ser chamada quando o botão for clicado.
-    """
+def desenhar_botao(superficie, cor_fundo, cor_texto, texto, x, y, largura, altura, acao = None):
     mouse_pos = pygame.mouse.get_pos()
     clique = pygame.mouse.get_pressed()
-
     botao_rect = pygame.Rect(x, y, largura, altura)
 
-    # Verifica se o mouse está sobre o botão
     if botao_rect.collidepoint(mouse_pos):
-        pygame.draw.rect(surface, CINZA_ESCURO, botao_rect) # Cor ao passar o mouse
-        if clique[0] == 1 and acao is not None: # clique[0] é o botão esquerdo do mouse
-            pygame.time.delay(200) # Pequeno delay para evitar cliques múltiplos rápidos
+        pygame.draw.rect(superficie, CINZA_ESCURO, botao_rect)
+        if clique[0] == 1 and acao is not None:
+            pygame.time.delay(200)
             acao()
     else:
-        pygame.draw.rect(surface, cor_fundo, botao_rect)
+        pygame.draw.rect(superficie, cor_fundo, botao_rect)
 
-    # Renderiza o texto
     texto_surf = fonte.render(texto, True, cor_texto)
     texto_rect = texto_surf.get_rect(center=botao_rect.center)
-    surface.blit(texto_surf, texto_rect)
+    superficie.blit(texto_surf, texto_rect)
 
-    return botao_rect
+# --- FUNÇÕES DE AÇÃO DOS BOTÕES  ---
 
-# Função de ação para o botão
-def acao_do_botao():
-    global rodando
-    global inicio
+def acao_iniciar_jogo():
+    global no_menu
+    print("Botão 'Iniciar' clicado!")
+    no_menu = False # Sinaliza para sair do loop do menu e começar o jogo
 
-    print("Botão 1 clicado!")
-    # Coloque aqui o que você quer que o botão faça
-    rodando = False
-    inicio = False
-    running = True
+def acao_mostrar_creditos():
+    global mostrar_creditos
+    print("Botão 'Creditos' clicado!")
+    mostrar_creditos = True # Sinaliza que a tela de créditos deve ser mostrada
 
+def acao_voltar_menu():
+    global mostrar_creditos
+    print("Botão 'Voltar' clicado!")
+    mostrar_creditos = False # Sinaliza para voltar à tela principal do menu
 
-def acao_do_botao2():
-    print("Botão 2 clicado!")
-    global limpa_creditos
-    # Coloque aqui o que você quer que o botão faça
-    ######### imagem dos creditos  ##########
-    creditos = pygame.image.load("images/tela_creditos.jpg")  ### tela dos creditos ####
-    creditos = pygame.transform.scale(creditos, (1110, 600))
-    # Limpar a tela
-    screen.fill((0, 0, 0))  # Preencher com preto
-    # Desenhar a imagem de game over
-    screen.blit(creditos, (width // 2 - creditos.get_width() // 2, height // 2 - creditos.get_height() // 2))
-    limpa_creditos = True
-    rodando = False
+def acao_sair_jogo():
+    global jogo_rodando
+    print("Botão 'Sair' clicado!")
+    jogo_rodando = False # Termina o loop principal da aplicação
 
-    # Para remover um botão:
+# =================================================================
+# LOOP DO MENU PRINCIPAL
+# =================================================================
 
-    # Atualizar a tela
-    pygame.display.update()
+while no_menu and jogo_rodando:
 
+    for evento in pygame.event.get():
+        if evento.type == pygame.QUIT:
+            no_menu = False
+            jogo_rodando = False
 
-def acao_do_botao3():
-    pygame.quit()
-
-    print("Botão 3 clicado!")
-    # Coloque aqui o que você quer que o botão faça
-    rodando = False
-    running = False
-
-
-def acao_do_botao4():
-    global limpa_creditos
-    print("Botão 4 clicado!")
-
-    inicio = pygame.image.load("images/inicio_2.jpg")
-    inicio = pygame.transform.scale(inicio, (900, 600))
-    # Limpar a tela
-    screen.fill((0, 0, 0))  # Preencher com preto
-    # Desenhar a imagem de game over
-    screen.blit(inicio, (width // 2 - inicio.get_width() // 2, height // 2 - inicio.get_height() // 2))
-
-    limpa_creditos = False
-
-    pygame.display.flip()
-
-
-
-
-# Loop principal do jogo
-rodando = True
-while rodando:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            rodando = False
-
-    # Desenha o botão
-    if limpa_creditos == False:
-
-        meu_botao = desenhar_botao(screen, AZUL, PRETO, "Iniciar", 350, 240, 200, 50, acao_do_botao)
-
-        meu_botao2 = desenhar_botao(screen, AMARELO, PRETO, "Creditos", 350, 340, 200, 50, acao_do_botao2)
-
-        meu_botao3 = desenhar_botao(screen, LARANJA, PRETO, "Sair", 350, 440, 200, 50, acao_do_botao3)
+    #
+    # A cada quadro, decidimos o que desenhar com base no estado de 'mostrar_creditos'
+    if mostrar_creditos:
+        # Desenha a tela de créditos
+        TELA.blit(creditos_img, (0, 0))
+        desenhar_botao(TELA, AMARELO, PRETO, "Voltar", 10, 10, 130, 50, acao_voltar_menu)
     else:
-        meu_botao4 = desenhar_botao(screen, AMARELO, PRETO, "Voltar", 10, 10, 130, 50, acao_do_botao4)
+        # Desenha a tela de menu principal
+        TELA.blit(inicio_img, (0, 0))
+        desenhar_botao(TELA, AZUL, PRETO, "Iniciar", 350, 240, 200, 50, acao_iniciar_jogo)
+        desenhar_botao(TELA, AMARELO, PRETO, "Creditos", 350, 340, 200, 50, acao_mostrar_creditos)
+        desenhar_botao(TELA, LARANJA, PRETO, "Sair", 350, 440, 200, 50, acao_sair_jogo)
 
-    # Atualiza a tela
+    # --- ATUALIZAÇÃO DA TELA ---
     pygame.display.flip()
+    relogio.tick(60)
 
-keys = pygame.key.get_pressed()
-
-#inicio = True
-while inicio:
-    for event in pygame.event.get():
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_RETURN:
-                inicio = False
-            if event.key == pygame.K_c:
-                ######### imagem dos creditos  ##########
-                creditos = pygame.image.load("images/inicio2.jpg")  ### tela dos creditos ####
-                creditos = pygame.transform.scale(creditos, (900, 600))
-                # Limpar a tela
-                screen.fill((0, 0, 0))  # Preencher com preto
-                # Desenhar a imagem de game over
-                screen.blit(creditos, (width // 2 - creditos.get_width() // 2, height // 2 - creditos.get_height() // 2))
-                # Atualizar a tela
-                pygame.display.update()
-                #########################################
-            if event.key == pygame.K_q: # se apertar a letra Q ou escape, fecha o jogo ####
-                inicio = False
-                running = False
-
-        if event.type == pygame.QUIT:
-            inicio = False
-            running = False
-
-#####################################
-
-
-
-
+# =================================================================
+# Inicio do jogo
+# =================================================================
 
 #Definindo um game class
 class Game():
-    def __init__(self, insper_group, food_group):
-        self.insper_group = insper_group
-        self.food_group = food_group
-        self.score = 0
-        self.lives = 5
+    # ... (o resto da sua classe Game continua aqui, sem alterações)
+    def __init__(self, insper_raposa, python_comidas):
+        self.insper_raposa = insper_raposa
+        self.python_comidas = python_comidas
+        self.pontuacao = 0
+        self.vidas = 5
 
-        self.small_font = pygame.font.SysFont('impact', 24)
-        self.big_font = pygame.font.SysFont('impact', 60)
+        self.fonte_pequena = pygame.font.SysFont('impact', 30)
+        self.fonte_media = pygame.font.SysFont('impact', 40)
+        self.fonte_grande = pygame.font.SysFont('impact', 60)
 
         #Aqui vamos definir o logo python e a chave
-        blue_food = pygame.image.load('images/food.png')
+        pythons = pygame.image.load('images/food.png')
         chave = pygame.image.load('images/chave.png')
 
         # Food group e chave
-        self.food_group.add(Food(190,200, chave, 1))
+        self.python_comidas.add(Food(190,200, chave, 1))
         for i in range(2): # Define quantos aumenta cada fase
-            self.food_group.add(Food(i*200,200, blue_food, 0))
-
+            self.python_comidas.add(Food(i*200,200, pythons, 0))
 
 
     def update(self):
@@ -229,46 +148,48 @@ class Game():
         self.draw()
 
 
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_p]:
-            self.pause_game()
+        teclas = pygame.key.get_pressed()
+        if teclas[pygame.K_p]:
+            self.pausar_jogo()
 
     def draw(self):
-        global next_level
+        global proximo_nivel
 
-        pygame.draw.rect(screen, "#003660", (0, 100, WINDOW_WIDTH, WINDOW_HEIGHT-200), 4)
+        pygame.draw.rect(TELA, "#003660", (0, 100, LARGURA_TELA, ALTURA_TELA-200), 4)
 
-        title_text = self.big_font.render(f"Insper Escape - Nivel: {next_level}" , True, "#003660")
-        title_rect = title_text.get_rect()
-        title_rect.center = (WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2)
-        title_rect.top = 5
+        titulo = self.fonte_grande.render(f"Insper Escape - Nivel: {proximo_nivel}" , True, "#003660")
+        titulo_rect = titulo.get_rect()
+        titulo_rect.center = (LARGURA_TELA / 2, ALTURA_TELA / 2)
+        titulo_rect.top = 5
 
 
-        #win_text = self.big_font.render(f"Level {next_level}!!!", True, "red")
+        #win_text = self.fonte_grande.render(f"Level {proximo_nivel}!!!", True, "red")
         #win_rect = win_text.get_rect()
-        #win_rect.centerx = WINDOW_WIDTH / 2
-        #win_rect.centery = WINDOW_HEIGHT / 2
+        #win_rect.centerx = LARGURA_TELA / 2
+        #win_rect.centery = ALTURA_TELA / 2
 
-        #score_text = self.small_font.render("Pontos: " + str(int(self.score)), True, "red")
-        #score_rect = score_text.get_rect()
-        #score_rect.topleft = (5,5)
+        #pontuacao = self.fonte_pequena.render("Pontos: " + str(int(self.pontuacao)), True, "red")
+        #pontuacao = pontuacao.get_rect()
+        #pontuacao.topleft = (5,5)
 
-        lives_text = self.small_font.render("Vidas: " + str(int(self.lives)), True, "red")
-        lives_rect = lives_text.get_rect()
-        lives_rect.topright = (WINDOW_WIDTH - 5, 5)
+        vidas_text = self.fonte_pequena.render("Vidas: " + str(int(self.vidas)), True, "red")
+        vidas_rect = vidas_text.get_rect()
+        vidas_rect.topright = (LARGURA_TELA - 5, 5)
 
-        screen.blit(title_text, title_rect)
-        #screen.blit(score_text, score_rect)  #desabilitei o score
-        screen.blit(lives_text, lives_rect)
+        TELA.blit(titulo, titulo_rect)
+        #TELA.blit(pontuacao_text, pontuacao)  #desabilitei o pontuacao
+        TELA.blit(vidas_text, vidas_rect)
 
-        if self.score == 1:
-            #screen.blit(win_text, win_rect)
-            next_level += 1
-            self.score = 0
-            our_game = Game(insper, food_group) #aqui roda novamente o jogo
+        if self.pontuacao == 1:
+            #TELA.blit(win_text, win_rect)
+            proximo_nivel += 1
+            self.pontuacao = 0
+            som_pegar_moeda.play()
+            nosso_jogo = Game(insper, python_comidas) #aqui roda novamente o jogo
 
-    def pause_game(self):
-        global running
+
+    def pausar_jogo (self):
+        global jogo_rodando
 
         is_paused = True
         while is_paused:
@@ -278,56 +199,65 @@ class Game():
                         is_paused = False
                 if event.type == pygame.QUIT:
                     is_paused = False
-                    running = False
+                    jogo_rodando = False
 
 
     def check_collision(self):
-        global next_level
+        global proximo_nivel
 
-        restart_game_text = self.small_font.render('Pressione "ENTER" para reiniciar', True, AMARELO_ALARANJADO, VINHO_ALARANJADO)
+        restart_game_text = self.fonte_pequena.render('Pressione "ENTER" para reiniciar', True, VINHO_ALARANJADO, AMARELO_ALARANJADO)
         restart_game_text_rect = restart_game_text.get_rect()
-        restart_game_text_rect.center = (WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 + 10)
+        restart_game_text_rect.center = (LARGURA_TELA / 2, ALTURA_TELA / 2 + 140)
 
-        pegar_chave = pygame.sprite.spritecollideany(self.insper_group, self.food_group)
+        restart_pontuacao_text = self.fonte_media.render(f"Você fez {proximo_nivel-1} pontos!", True, AMARELO_ALARANJADO, VINHO_ALARANJADO)
+        restart_pontuacao_text_rect = restart_pontuacao_text.get_rect()
+        restart_pontuacao_text_rect.center = (LARGURA_TELA / 2, ALTURA_TELA / 2 + 10)
+
+
+
+
+
+        pegar_chave = pygame.sprite.spritecollideany(self.insper_raposa, self.python_comidas)
         if pegar_chave:
             if pegar_chave.type == 0:
-                if self.lives == 1:
+                if self.vidas == 1:
                     ########### Aqui mostra a tela de Game Over e reinicia o joga apos apertar "Enter" #####
                     width, height = 900, 600
-                    #screen = pygame.display.set_mode((width, height))
-                    self.lives = 5
-                    self.score = 0
-                    next_level = 1
+                    #TELA = pygame.display.set_mode((width, height))
+                    self.vidas = 5
+                    self.pontuacao = 0
+                    proximo_nivel = 1
                     game_over = pygame.image.load("images/game_over.jpg")
                     game_over = pygame.transform.scale(game_over, (1100, 600))
                     # Desenhar a imagem de game over
-                    screen.blit(game_over, (width // 2 - game_over.get_width() // 2, height // 2 - game_over.get_height() // 2))
+                    TELA.blit(game_over, (width // 2 - game_over.get_width() // 2, height // 2 - game_over.get_height() // 2))
                     # Atualizar a tela
                     pygame.display.update()
 
                     ##### Aqui coloco a mensagem de Enter para reiniciar #######
-                    screen.blit(restart_game_text, restart_game_text_rect)
+                    TELA.blit(restart_game_text, restart_game_text_rect)
                     pygame.display.update()
 
+                    ##### Aqui coloco a mensagem de pontuacao #######
+                    TELA.blit(restart_pontuacao_text, restart_pontuacao_text_rect)
+                    pygame.display.update()
 
-                    keys = pygame.key.get_pressed()
-                    self.pause_game()       #Aqui para o jogo e espera o Enter para reiniciar
-                    food_group.remove(food_group) # Aqui apaga os sprites para reiniciar o jogo
-                    #print(food_group)
-                    our_game = Game(insper, food_group)
+                    teclas = pygame.key.get_pressed()
+                    self.pausar_jogo()       #Aqui para o jogo e espera o Enter para reiniciar
+                    python_comidas.remove(python_comidas) # Aqui apaga os sprites para reiniciar o jogo
+                    #print(python_comidas)
+                    nosso_jogo = Game(insper, python_comidas)
                 else:
-                    self.lives -= 1
-                self.insper_group.reset()
+                    self.vidas -= 1
+                self.insper_raposa.reset()
 
             else:
-                pegar_chave.remove(self.food_group)
-                self.score += 1
-
-
+                pegar_chave.remove(self.python_comidas)
+                self.pontuacao += 1
 
 # Definindo a class
-
 class Insper(pygame.sprite.Sprite):
+    # ... (o resto da sua classe Insper continua aqui, sem alterações)
     def __init__(self, x, y):
         super().__init__()
         #define a imagem
@@ -337,37 +267,29 @@ class Insper(pygame.sprite.Sprite):
         #define posicao
         self.rect.topleft = (x, y)
         #move a imagem
-        self.velocity = 10 #velocidade da raposa insper
-        #acrescentando o food group
-        #self.food_group = food_group
+        self.velocity = 10 # velocidade da raposa insper
+        #acrescentando o python_comidas
+        #self.python_comidas = python_comidas
     def update(self):
         self.move()
         #self.check_collision()
 
     def move(self):
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_a] and self.rect.x >= 10 or keys[pygame.K_LEFT] and self.rect.x >= 10:
+        teclas = pygame.key.get_pressed()
+        if teclas[pygame.K_a] and self.rect.x >= 10 or teclas[pygame.K_LEFT] and self.rect.x >= 10:
             self.rect.x -= self.velocity
-        if keys[pygame.K_d] and self.rect.x <= WINDOW_WIDTH - 95 or keys[pygame.K_RIGHT] and self.rect.x <= WINDOW_WIDTH - 95:
+        if teclas[pygame.K_d] and self.rect.x <= LARGURA_TELA - 95 or teclas[pygame.K_RIGHT] and self.rect.x <= LARGURA_TELA - 95:
             self.rect.x += self.velocity
-        if keys[pygame.K_w] and self.rect.y >= 110 or keys[pygame.K_UP] and self.rect.y >= 110:
+        if teclas[pygame.K_w] and self.rect.y >= 110 or teclas[pygame.K_UP] and self.rect.y >= 110:
             self.rect.y -= self.velocity
-        if keys[pygame.K_s] and self.rect.y <= WINDOW_HEIGHT - 95 or keys[pygame.K_DOWN] and self.rect.y <= WINDOW_HEIGHT - 95:
+        if teclas[pygame.K_s] and self.rect.y <= ALTURA_TELA - 95 or teclas[pygame.K_DOWN] and self.rect.y <= ALTURA_TELA - 95:
             self.rect.y += self.velocity
 
     def reset(self):
         self.rect.topleft = (100, 510)
 
-
-
-#    def check_collision(self):
-#        if pygame.sprite.spritecollide(self, self.food_group, True):
-#            print(len(food_group))
-
-
-
-
 class Food(pygame.sprite.Sprite):
+    # ... (o resto da sua classe Food continua aqui, sem alterações)
     def __init__(self, x, y, image, food_type):
         super().__init__()
         #define a imagem
@@ -392,55 +314,38 @@ class Food(pygame.sprite.Sprite):
         self.rect.x += self.dx * self.velocity
         self.rect.y += self.dy * self.velocity
         #ficar no quadrado
-        if self.rect.left <= 0 or self.rect.right >= WINDOW_WIDTH:
+        if self.rect.left <= 0 or self.rect.right >= LARGURA_TELA:
             self.dx = -1 * self.dx
         if self.rect.top <= 100 or self.rect.bottom >= 500:
             self.dy = -1 * self.dy
 
-food_group = pygame.sprite.Group()
 
+python_comidas = pygame.sprite.Group()
+insper_raposa = pygame.sprite.Group()
+insper = Insper(200, 510)
+insper_raposa.add(insper)
 
-#Cria o Insper group
-insper_group = pygame.sprite.Group()
-#posiciona o insper na tela
-insper = Insper(200,510)
-#adiciona o Insper no grupo
-insper_group.add(insper)
+nosso_jogo = Game(insper, python_comidas)
 
-#carrega a imagem
-#insper = pygame.image.load("images/insper.png")
+# =================================================================
+# LOOP DO JOGO PRINCIPAL
+# =================================================================
 
-#coloca a imagem na tela
-#insper_rect = insper.get_rect()
-
-#Posiciona na tela
-#insper_rect.center = (60, WINDOW_HEIGHT/2)
-
-#######criar o class game#######
-our_game = Game(insper, food_group)
-
-while running:
-    #Aqui o jogo fecha quando clicar no X
+while jogo_rodando:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            running = False
+            jogo_rodando = False
 
-    #Escolher a cor da tela
+    TELA.fill("black")
 
-    screen.fill("black")
-
-    #screen.blit(insper, insper_rect)
-    #coloca na tela e move
-    food_group.update()
-    food_group.draw(screen)
-    insper_group.update()
-    insper_group.draw(screen)
-
-    #atualiza o jogo
-    our_game.update()
+    python_comidas.update()
+    python_comidas.draw(TELA)
+    insper_raposa.update()
+    insper_raposa.draw(TELA)
+    nosso_jogo.update()
 
     pygame.display.flip()
+    dt = relogio.tick(60) / 1000
 
-    dt = clock.tick(60) / 1000
-
+# --- FIM DO JOGO ---
 pygame.quit()
