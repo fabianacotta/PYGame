@@ -44,7 +44,7 @@ creditos_img = pygame.transform.scale(creditos_img, (LARGURA_TELA, ALTURA_TELA))
 fonte = pygame.font.Font("fontes/fonte1.ttf", 36)
 
 #Definindo som
-som_pegar_moeda = pygame.mixer.Sound("sounds/click.wav")
+som_pegar_moeda = pygame.mixer.Sound("sounds/som_pegar_moeda.mp3")
 
 
 # --- FUNÇÕES ---
