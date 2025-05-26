@@ -45,6 +45,7 @@ fonte = pygame.font.Font("fontes/fonte1.ttf", 36)
 
 #Definindo som
 som_pegar_moeda = pygame.mixer.Sound("sounds/som_pegar_moeda.mp3")
+# som_jogo = pygame.mixer.Sound("sounds/som_jogo.mp3")
 
 
 # --- FUNÇÕES ---
@@ -335,6 +336,8 @@ while jogo_rodando:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             jogo_rodando = False
+
+    som_jogo.play()
 
     TELA.fill("black")
 
