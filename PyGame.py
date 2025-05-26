@@ -45,6 +45,7 @@ fonte = pygame.font.Font("fontes/fonte1.ttf", 36)
 
 #Definindo som
 som_pegar_moeda = pygame.mixer.Sound("sounds/som_pegar_moeda.mp3")
+som_colisao = pygame.mixer.Sound("sounds/som_colisao.mp3")
 # som_jogo = pygame.mixer.Sound("sounds/som_jogo.mp3")
 
 
@@ -250,6 +251,7 @@ class Game():
                     nosso_jogo = Game(insper, python_comidas)
                 else:
                     self.vidas -= 1
+                    som_colisao.play() 
                 self.insper_raposa.reset()
 
             else:
@@ -337,7 +339,7 @@ while jogo_rodando:
         if event.type == pygame.QUIT:
             jogo_rodando = False
 
-    som_jogo.play()
+    # som_jogo.play()
 
     TELA.fill("black")
 
