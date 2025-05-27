@@ -5,6 +5,9 @@
 
 Cada moeda coletada te leva para um novo nível com cada vez mais Pythons para dificultar o avanço, mas cuidado: colidir com um Python reduz suas vidas. Você começa com 5 vidas, mas quando elas acabam, acaba o jogo e você pode reiniciar ou sair! 
 
+Aqui está um vídeo da demonstração de funcionamento do jogo: 
+https://www.youtube.com/watch?v=IifzD1tzUA4
+
 ---
 
 ## 🎮 Como Jogar
